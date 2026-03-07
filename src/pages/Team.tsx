@@ -11,15 +11,15 @@ const teamMembers = [
   },
   {
     name: "Adeyinka Meduoye",
-    role: "Emergency Response Lead",
+    role: "Medical Tech Lead",
     specialty: "Emergency Medicine",
     image: "/images/team/adeyinka.png"
   },
   {
-    name: "Nurse Jennier Enwerem",
+    name: "Nurse Jennifer Enwerem",
     role: "Nursing Coordinator",
     specialty: "Critical Care",
-    image: "/images/team/nurse-jennier-enwerem.jpg"
+    image: "/images/team/nurse-jennifer.png"
   },
   {
     name: "Paramedic Faith",
