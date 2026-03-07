@@ -44,6 +44,19 @@ async function startServer() {
       appType: "spa",
     });
     app.use(vite.middlewares);
+  } else {
+    // Serve static files from dist in production
+    const path = await import("path");
+    const { fileURLToPath } = await import("url");
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    
+    app.use(express.static(path.join(__dirname, "dist")));
+    
+    // SPA fallback: serve index.html for any unknown routes
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "dist", "index.html"));
+    });
   }
 
   app.listen(PORT, "0.0.0.0", () => {
