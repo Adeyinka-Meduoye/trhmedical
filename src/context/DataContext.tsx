@@ -26,7 +26,7 @@ export interface Appointment {
   type: string;
   date: string;
   time: string;
-  status: 'Pending' | 'Approved' | 'Rejected' | 'Completed';
+  status: 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
   rejectionReason?: string;
   reason?: string; // Optional reason for appointment
   notes?: string; // Additional notes
@@ -70,6 +70,7 @@ interface DataContextType {
   addAppointment: (appointment: Appointment) => void;
   updateAppointment: (id: string, updates: Partial<Appointment>) => void;
   deleteAppointment: (id: string) => void;
+  cancelAppointment: (refId: string) => void;
   addIncident: (incident: Incident) => void;
   updateIncident: (id: string, updates: Partial<Incident>) => void;
   deleteIncident: (id: string) => void;
@@ -92,16 +93,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const fetchData = async () => {
         try {
           const vData = await googleSheetsService.getData('Volunteers');
-          if (Array.isArray(vData)) setVolunteers(vData);
+          if (Array.isArray(vData)) {
+            setVolunteers(vData);
+          } else {
+            console.error("Failed to load Volunteers. Data received:", vData);
+          }
 
           const aData = await googleSheetsService.getData('Appointments');
-          if (Array.isArray(aData)) setAppointments(aData);
+          if (Array.isArray(aData)) {
+            setAppointments(aData);
+          } else {
+             console.error("Failed to load Appointments. Data received:", aData);
+          }
 
           const iData = await googleSheetsService.getData('Incidents');
-          if (Array.isArray(iData)) setIncidents(iData);
+          if (Array.isArray(iData)) {
+            setIncidents(iData);
+          } else {
+             console.error("Failed to load Incidents. Data received:", iData);
+          }
 
           const hData = await googleSheetsService.getData('Hospitals');
-          if (Array.isArray(hData)) setHospitals(hData);
+          if (Array.isArray(hData)) {
+            setHospitals(hData);
+          } else {
+             console.error("Failed to load Hospitals. Data received:", hData);
+          }
         } catch (error) {
           console.error("Failed to sync with Google Sheets:", error);
         }
@@ -138,6 +155,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
     if (GOOGLE_SCRIPT_URL) googleSheetsService.deleteRow('Appointments', id);
   };
 
+  const cancelAppointment = (refId: string) => {
+    const appointment = appointments.find(a => a.refId === refId);
+    if (appointment) {
+      updateAppointment(appointment.id, { status: 'Cancelled' as any });
+    }
+  };
+
   // Incidents
   const addIncident = (i: Incident) => {
     setIncidents(prev => [i, ...prev]);
@@ -166,7 +190,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     <DataContext.Provider value={{
       volunteers, appointments, incidents, hospitals,
       addVolunteer, updateVolunteer, deleteVolunteer,
-      addAppointment, updateAppointment, deleteAppointment,
+      addAppointment, updateAppointment, deleteAppointment, cancelAppointment,
       addIncident, updateIncident, deleteIncident,
       addHospital, deleteHospital
     }}>

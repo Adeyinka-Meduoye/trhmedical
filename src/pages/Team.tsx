@@ -4,43 +4,42 @@ import { User, Linkedin, Mail } from 'lucide-react';
 
 const teamMembers = [
   {
-    name: "Dr. Sarah Johnson",
-    role: "Head of Medical Unit",
-    specialty: "General Medicine",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    name: "Dr. Simon Priestley",
+    role: "Spiritual Director",
+    specialty: "Mental Health & Wellness",
+    image: "/images/team/simon-priestley.jpg"
   },
   {
-    name: "Dr. Michael Chen",
+    name: "Adeyinka Meduoye",
     role: "Emergency Response Lead",
     specialty: "Emergency Medicine",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/images/team/adeyinka.png"
   },
   {
-    name: "Nurse Emily Davis",
+    name: "Nurse Jennier Enwerem",
     role: "Nursing Coordinator",
     specialty: "Critical Care",
-    image: "https://images.unsplash.com/photo-1595290293083-255986321553?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/images/team/nurse-jennier-enwerem.jpg"
   },
   {
-    name: "Pharm. David Wilson",
+    name: "Paramedic Faith",
     role: "Pharmacy Lead",
     specialty: "Clinical Pharmacy",
-    image: "https://images.unsplash.com/photo-1637059824899-a441006a6875?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/images/team/pharm-david-wilson.jpg"
   },
   {
-    name: "Dr. Jessica Brown",
+    name: "Nurse Jane",
     role: "Wellness Coordinator",
     specialty: "Public Health",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/images/team/nurse-jane.jpg"
   },
   {
-    name: "Mr. James Carter",
+    name: "Para. Christian Ekremide",
     role: "Logistics Officer",
     specialty: "Medical Logistics",
-    image: "https://images.unsplash.com/photo-1537368910025-bc005ca23c5b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+    image: "/images/team/christian-ekremide.jpg"
   }
 ];
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {

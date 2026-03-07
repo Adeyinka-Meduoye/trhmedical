@@ -125,6 +125,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <li><Link to="/services" className="hover:text-brand-secondary transition-colors">Services</Link></li>
               <li><Link to="/volunteer" className="hover:text-brand-secondary transition-colors">Join the Team</Link></li>
               <li><Link to="/emergency" className="hover:text-brand-secondary transition-colors">Emergency Support</Link></li>
+              <li><Link to="/blog" className="hover:text-brand-secondary transition-colors">Health & Wellness Blog</Link></li>
             </ul>
           </div>
           <div>

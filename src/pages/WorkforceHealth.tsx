@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useData, Appointment } from '../context/DataContext';
 
 export default function WorkforceHealth() {
-  const { addAppointment, appointments } = useData();
+  const { addAppointment, appointments, cancelAppointment } = useData();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [bookingType, setBookingType] = useState('bp_check');
@@ -15,6 +15,7 @@ export default function WorkforceHealth() {
   const [refId, setRefId] = useState<string | null>(null);
   const [checkRefId, setCheckRefId] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const refIdInputRef = React.useRef<HTMLInputElement>(null);
 
   const availableSlots = [
     "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", 
@@ -67,6 +68,20 @@ export default function WorkforceHealth() {
     setStatusModalOpen(true);
   };
 
+  const handleCancelAppointment = () => {
+    if (statusResult?.data && window.confirm("Are you sure you want to cancel this appointment?")) {
+      cancelAppointment(statusResult.data.refId);
+      setStatusModalOpen(false);
+      // Refresh status result immediately if we were to keep modal open, but closing is safer
+      alert("Appointment cancelled successfully.");
+    }
+  };
+
+  const scrollToRefIdInput = () => {
+    refIdInputRef.current?.scrollIntoView({ behavior: 'smooth' });
+    refIdInputRef.current?.focus();
+  };
+
   return (
     <div className="max-w-5xl mx-auto relative">
       <AnimatePresence>
@@ -115,7 +130,7 @@ export default function WorkforceHealth() {
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         statusResult.data.status === 'Approved' ? 'bg-green-500/20 text-green-400' :
                         statusResult.data.status === 'Completed' ? 'bg-blue-500/20 text-blue-400' :
-                        statusResult.data.status === 'Rejected' ? 'bg-red-500/20 text-red-400' :
+                        statusResult.data.status === 'Rejected' || statusResult.data.status === 'Cancelled' ? 'bg-red-500/20 text-red-400' :
                         'bg-yellow-500/20 text-yellow-400'
                       }`}>
                         {statusResult.data.status}
@@ -125,6 +140,23 @@ export default function WorkforceHealth() {
                        <div className="pt-2 text-xs text-red-400 italic border-t border-white/10 mt-2">
                          Reason: {statusResult.data.rejectionReason}
                        </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => setStatusModalOpen(false)}
+                      className="flex-1 px-6 py-3 bg-white/10 text-text-primary font-bold rounded-xl hover:bg-white/20 transition-colors"
+                    >
+                      Close
+                    </button>
+                    {statusResult.data.status !== 'Cancelled' && statusResult.data.status !== 'Completed' && statusResult.data.status !== 'Rejected' && (
+                      <button 
+                        onClick={handleCancelAppointment}
+                        className="flex-1 px-6 py-3 bg-red-500/20 text-red-400 font-bold rounded-xl hover:bg-red-500/30 transition-colors border border-red-500/30"
+                      >
+                        Cancel
+                      </button>
                     )}
                   </div>
                 </>
@@ -137,15 +169,14 @@ export default function WorkforceHealth() {
                   <p className="text-text-secondary mb-6">
                     We couldn't find an appointment with Reference ID <span className="font-mono text-brand-secondary font-bold">{checkRefId}</span>.
                   </p>
+                  <button 
+                    onClick={() => setStatusModalOpen(false)}
+                    className="px-6 py-3 bg-white/10 text-text-primary font-bold rounded-xl hover:bg-white/20 transition-colors w-full"
+                  >
+                    Close
+                  </button>
                 </>
               )}
-
-              <button 
-                onClick={() => setStatusModalOpen(false)}
-                className="px-6 py-3 bg-white/10 text-text-primary font-bold rounded-xl hover:bg-white/20 transition-colors w-full"
-              >
-                Close
-              </button>
             </motion.div>
           </motion.div>
         )}
@@ -380,6 +411,7 @@ export default function WorkforceHealth() {
             </h3>
             <div className="space-y-3">
               <input 
+                ref={refIdInputRef}
                 type="text"
                 placeholder="Enter REF ID"
                 value={checkRefId}
@@ -419,7 +451,10 @@ export default function WorkforceHealth() {
             <p className="text-sm text-text-secondary mb-4">
               Please cancel at least 24 hours in advance so another workforce member can use the slot.
             </p>
-            <button className="text-sm font-semibold text-brand-secondary hover:text-text-primary underline transition-colors">
+            <button 
+              onClick={scrollToRefIdInput}
+              className="text-sm font-semibold text-brand-secondary hover:text-text-primary underline transition-colors"
+            >
               Manage My Bookings
             </button>
           </div>

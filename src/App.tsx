@@ -12,6 +12,7 @@ import MedicalServices from './pages/MedicalServices';
 import Reports from './pages/Reports';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
+import Blog from './pages/Blog';
 import { DataProvider } from './context/DataContext';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/reports" element={<Reports />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/blog" element={<Blog />} />
           </Routes>
         </Layout>
       </DataProvider>

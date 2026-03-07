@@ -191,9 +191,9 @@ export default function MedicalServices() {
             <p className="text-slate-300 text-lg">
               We believe in the power of preventive education. Access our library of health tips, first aid guides, and wellness articles.
             </p>
-            <button className="px-6 py-3 bg-brand-secondary text-bg-dark font-bold rounded-xl hover:bg-brand-secondary/90 transition-colors">
+            <Link to="/blog" className="inline-block px-6 py-3 bg-brand-secondary text-bg-dark font-bold rounded-xl hover:bg-brand-secondary/90 transition-colors">
               Browse Health Articles
-            </button>
+            </Link>
           </div>
           <div className="flex-1 flex justify-center">
             <div className="grid grid-cols-2 gap-4 opacity-80">
