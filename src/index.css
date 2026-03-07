@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #2a1b5e;
+  --color-brand-secondary: #f69d1a;
+  --color-brand-tertiary: #e85615;
+  
+  --color-bg-dark: #0f172a;
+  --color-bg-card: #1e293b;
+  --color-bg-input: #334155;
+  
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-dark text-text-primary font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-text-primary font-bold;
+  }
+  
+  p {
+    @apply text-text-secondary;
+  }
+}
+
+@keyframes shimmer-left {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes shimmer-right {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer-left {
+  animation: shimmer-left 8s linear infinite;
+}
+
+.animate-gradient-right {
+  animation: shimmer-right 8s linear infinite;
+}
