@@ -135,6 +135,9 @@ export default function Volunteer() {
                   <option value="Pharmacist">Pharmacist</option>
                   <option value="EMT">EMT / Paramedic</option>
                   <option value="Student">Medical Student</option>
+                  <option value="Therapist">Therapist</option>
+                  <option value="Health Advocate">Health Advocate</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
               <div>
