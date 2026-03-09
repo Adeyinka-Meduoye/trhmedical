@@ -10,6 +10,7 @@ export interface Volunteer {
   profession: string;
   status: 'Pending' | 'Approved' | 'Rejected';
   rejectionReason?: string;
+  actionBy?: string;
   joinedDate: string;
   licenseNumber?: string;
   experience?: string;
@@ -28,6 +29,7 @@ export interface Appointment {
   time: string;
   status: 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
   rejectionReason?: string;
+  actionBy?: string;
   reason?: string; // Optional reason for appointment
   notes?: string; // Additional notes
 }
@@ -42,6 +44,7 @@ export interface Incident {
   date: string;
   severity: 'Low' | 'Medium' | 'High' | 'Critical';
   status: 'Open' | 'Resolved' | 'Unresolved';
+  actionBy?: string;
 }
 
 export interface Hospital {

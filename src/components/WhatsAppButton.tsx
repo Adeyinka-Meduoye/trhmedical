@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { MessageCircle, X, Send, MapPin, User, Phone, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useData } from '../context/DataContext';
 
 export default function WhatsAppEmergencyButton() {
+  const { addIncident } = useData();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    category: 'Church Member',
+    category: '',
     location: '',
     nature: ''
   });
@@ -18,6 +20,19 @@ export default function WhatsAppEmergencyButton() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Log the emergency as an incident in the system
+    addIncident({
+      id: Date.now().toString(),
+      type: 'Medical Emergency',
+      description: `Location: ${formData.location} | Nature: ${formData.nature} | Category: ${formData.category}`,
+      reportedBy: formData.name,
+      severity: 'Critical',
+      date: new Date().toISOString().split('T')[0],
+      status: 'Open',
+      fullName: formData.name,
+      phone: formData.phone
+    });
+
     const message = `*URGENT: MEDICAL ASSISTANCE REQUESTED*
 --------------------------------
 👤 *Name:* ${formData.name}
@@ -39,13 +54,15 @@ _Sent via TRH Medical Website_`;
     <>
       {/* Floating Button */}
       <motion.button
-        whileHover={{ scale: 1.05 }}
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-green-500 transition-colors border border-green-400/30"
+        className="fixed bottom-6 right-6 z-[999] flex items-center justify-center gap-2 bg-red-600 text-white p-4 lg:px-5 lg:py-3 rounded-full shadow-lg shadow-red-600/30 hover:bg-red-500 transition-colors border border-red-400/30"
       >
-        <MessageCircle className="w-6 h-6" />
-        <span className="font-bold hidden md:inline">Emergency Help</span>
+        <AlertCircle className="w-6 h-6" />
+        <span className="font-bold hidden lg:inline">Emergency Help</span>
       </motion.button>
 
       {/* Modal */}

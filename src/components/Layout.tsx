@@ -35,23 +35,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-1">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${isActive
-                        ? 'bg-brand-primary/20 text-brand-secondary border border-brand-primary/30'
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
+                      isActive 
+                        ? 'bg-brand-primary/20 text-brand-secondary border border-brand-primary/30' 
                         : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
-                      }`}
+                    }`}
                   >
                     {item.name}
                   </Link>
                 );
               })}
-              <Link
+              <Link 
                 to="/contact"
                 className="ml-4 px-4 py-2 bg-brand-secondary text-bg-dark text-sm font-bold rounded-lg hover:bg-brand-secondary/90 transition-colors"
               >
@@ -60,7 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex items-center md:hidden">
+            <div className="flex items-center lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 rounded-md text-text-secondary hover:bg-white/5 hover:text-text-primary"
@@ -73,10 +74,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <motion.div
+          <motion.div 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
-            className="md:hidden border-t border-white/10 bg-bg-dark"
+            className="lg:hidden border-t border-white/10 bg-bg-dark"
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
@@ -90,6 +91,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   {item.name}
                 </Link>
               ))}
+              <Link
+                to="/contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-3 py-3 rounded-md text-base font-medium text-brand-secondary hover:bg-white/5 flex items-center gap-3"
+              >
+                <Phone className="w-5 h-5 text-brand-secondary" />
+                Contact Us
+              </Link>
             </div>
           </motion.div>
         )}
@@ -106,10 +115,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-6 h-6 bg-brand-primary rounded flex items-center justify-center">
-                <img src="/images/TRH-white-trans.png"
-                  alt="TRH Medical"
-                  className="h-8 w-auto"
-                />
+                <Heart className="w-3 h-3 text-brand-secondary" fill="currentColor" />
               </div>
               <span className="font-bold text-text-primary">TRH Medical Organisation</span>
             </div>
@@ -125,7 +131,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <li><Link to="/services" className="hover:text-brand-secondary transition-colors">Services</Link></li>
               <li><Link to="/volunteer" className="hover:text-brand-secondary transition-colors">Join the Team</Link></li>
               <li><Link to="/emergency" className="hover:text-brand-secondary transition-colors">Emergency Support</Link></li>
-              <li><Link to="/blog" className="hover:text-brand-secondary transition-colors">Health & Wellness Blog</Link></li>
+              <li><Link to="/blog" className="hover:text-brand-secondary transition-colors">Health Blog</Link></li>
             </ul>
           </div>
           <div>
@@ -133,7 +139,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="space-y-2 text-sm">
               <li>trhmedical@gmail.com</li>
               <li>+2348185546555</li>
-              <li>The Banquet Hall, Starjen Hotel, Doyin/Igbo Elerin Bus-Stop, Ojo, Okokomaiko, Lagos, Nigeria</li>
+              <li><p className="text-text-secondary">
+                The Banquet Hall, Starjen Hotel,<br/>
+                Doyin/Igbo Elerin Bus-Stop, Okokomaiko,<br/>
+                Ojo, Lagos, Nigeria
+              </p></li>
             </ul>
           </div>
         </div>

@@ -67,9 +67,14 @@ export default function EmergencySupport() {
                 >
                   <Phone className="w-4 h-4" /> Call
                 </a>
-                <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-brand-primary/20 text-brand-secondary hover:bg-brand-primary/30 font-medium rounded-lg transition-colors border border-brand-primary/30">
+                <a 
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hospital.name + ' ' + hospital.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-brand-primary/20 text-brand-secondary hover:bg-brand-primary/30 font-medium rounded-lg transition-colors border border-brand-primary/30"
+                >
                   <Navigation className="w-4 h-4" /> Directions
-                </button>
+                </a>
               </div>
             </div>
           ))}

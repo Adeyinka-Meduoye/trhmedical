@@ -111,12 +111,12 @@ export default function Home() {
 
       {/* Schedule Section */}
       <section className="bg-bg-card rounded-3xl p-8 md:p-12 border border-white/10">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          <div>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+          <div className="lg:w-1/3">
             <h2 className="text-2xl font-bold text-text-primary mb-2">Medical Team Availability</h2>
             <p className="text-text-secondary">Our team is physically present during these times:</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full md:w-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full lg:w-2/3">
             <div className="flex items-center gap-3 bg-bg-input p-4 rounded-xl border border-white/10">
               <Clock className="w-5 h-5 text-brand-secondary" />
               <div>

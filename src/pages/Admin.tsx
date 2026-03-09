@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Users, Calendar, AlertTriangle, Building2, Plus, LogOut, Trash2, Search, CheckCircle, XCircle, X } from 'lucide-react';
+import { Users, Calendar, AlertTriangle, Building2, Plus, LogOut, Trash2, Search, CheckCircle, XCircle, X, Eye } from 'lucide-react';
 import { useData, Volunteer, Appointment, Incident, Hospital } from '../context/DataContext';
 
 export default function Admin() {
   // --- State ---
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('adminAuth') === 'true';
+  });
+  const [loggedInAdmin, setLoggedInAdmin] = useState(() => {
+    return localStorage.getItem('adminUsername') || '';
   });
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +36,36 @@ export default function Admin() {
   const [rejectionReason, setRejectionReason] = useState('');
   const [selectedItemForRejection, setSelectedItemForRejection] = useState<{id: string, type: 'volunteer' | 'appointment'} | null>(null);
 
+  const [volunteerSearch, setVolunteerSearch] = useState('');
+  const [appointmentSearch, setAppointmentSearch] = useState('');
+  const [incidentSearch, setIncidentSearch] = useState('');
+
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [detailsItem, setDetailsItem] = useState<{type: 'volunteer' | 'appointment' | 'incident', data: any} | null>(null);
+
+  const handleViewDetails = (item: any, type: 'volunteer' | 'appointment' | 'incident') => {
+    setDetailsItem({ type, data: item });
+    setDetailsModalOpen(true);
+  };
+
+  const filteredVolunteers = volunteers.filter(v => 
+    v.fullName.toLowerCase().includes(volunteerSearch.toLowerCase()) || 
+    v.email.toLowerCase().includes(volunteerSearch.toLowerCase()) ||
+    v.profession.toLowerCase().includes(volunteerSearch.toLowerCase())
+  );
+
+  const filteredAppointments = appointments.filter(a => 
+    a.patientName.toLowerCase().includes(appointmentSearch.toLowerCase()) || 
+    a.refId.toLowerCase().includes(appointmentSearch.toLowerCase()) ||
+    a.type.toLowerCase().includes(appointmentSearch.toLowerCase())
+  );
+
+  const filteredIncidents = incidents.filter(i => 
+    i.type.toLowerCase().includes(incidentSearch.toLowerCase()) || 
+    i.reportedBy.toLowerCase().includes(incidentSearch.toLowerCase()) ||
+    (i.fullName && i.fullName.toLowerCase().includes(incidentSearch.toLowerCase()))
+  );
+
   // --- Handlers ---
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +75,9 @@ export default function Admin() {
     
     if (validUsers.includes(username) && password === adminPassword) {
       setIsAuthenticated(true);
+      setLoggedInAdmin(username);
       localStorage.setItem('adminAuth', 'true');
+      localStorage.setItem('adminUsername', username);
       setError('');
     } else {
       setError('Invalid credentials');
@@ -51,7 +86,9 @@ export default function Admin() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setLoggedInAdmin('');
     localStorage.removeItem('adminAuth');
+    localStorage.removeItem('adminUsername');
   };
 
   const handleAddHospital = (e: React.FormEvent) => {
@@ -120,12 +157,14 @@ export default function Admin() {
     if (selectedItemForRejection.type === 'volunteer') {
       updateVolunteer(selectedItemForRejection.id, {
         status: 'Rejected',
-        rejectionReason: rejectionReason
+        rejectionReason: rejectionReason,
+        actionBy: loggedInAdmin
       });
     } else {
       updateAppointment(selectedItemForRejection.id, {
         status: 'Rejected',
-        rejectionReason: rejectionReason
+        rejectionReason: rejectionReason,
+        actionBy: loggedInAdmin
       });
     }
     setRejectionModalOpen(false);
@@ -139,7 +178,8 @@ export default function Admin() {
     }
 
     updateVolunteer(id, {
-      status: 'Approved'
+      status: 'Approved',
+      actionBy: loggedInAdmin
     });
   };
 
@@ -150,13 +190,15 @@ export default function Admin() {
     }
 
     updateAppointment(id, {
-      status: action === 'Approve' ? 'Approved' : 'Completed'
+      status: action === 'Approve' ? 'Approved' : 'Completed',
+      actionBy: loggedInAdmin
     });
   };
 
   const handleIncidentAction = (id: string, action: 'Resolved' | 'Unresolved') => {
     updateIncident(id, {
-      status: action
+      status: action,
+      actionBy: loggedInAdmin
     });
   };
 
@@ -296,6 +338,52 @@ export default function Admin() {
           </motion.div>
         )}
 
+        {detailsModalOpen && detailsItem && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-bg-card border border-brand-secondary/30 p-8 rounded-2xl shadow-2xl max-w-2xl w-full relative max-h-[90vh] overflow-y-auto"
+            >
+              <button 
+                onClick={() => setDetailsModalOpen(false)}
+                className="absolute top-4 right-4 text-text-secondary hover:text-text-primary"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h3 className="text-2xl font-bold text-text-primary mb-6 capitalize">{detailsItem.type} Details</h3>
+              
+              <div className="space-y-4 text-left">
+                {Object.entries(detailsItem.data).map(([key, value]) => {
+                  if (key === 'id') return null;
+                  return (
+                    <div key={key} className="border-b border-white/10 pb-2">
+                      <span className="text-text-secondary text-sm capitalize block mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                      <span className="font-medium text-text-primary">
+                        {Array.isArray(value) ? value.join(', ') : String(value || 'N/A')}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button 
+                onClick={() => setDetailsModalOpen(false)}
+                className="mt-8 px-6 py-3 bg-white/10 text-text-primary font-bold rounded-xl hover:bg-white/20 transition-colors w-full"
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+
         {rejectionModalOpen && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -356,13 +444,18 @@ export default function Admin() {
           <h1 className="text-2xl font-bold text-text-primary">Admin Dashboard</h1>
           <p className="text-text-secondary">Manage volunteers, appointments, and incidents.</p>
         </div>
-        <button 
-          onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors border border-red-500/20"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-text-secondary bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+            Logged in as: <span className="font-bold text-brand-secondary">{loggedInAdmin}</span>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors border border-red-500/20"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -395,11 +488,17 @@ export default function Admin() {
         {/* Volunteers Tab */}
         {activeTab === 'volunteers' && (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-xl font-bold text-text-primary">Volunteer Applications</h2>
-              <div className="relative">
+              <div className="relative w-full sm:w-auto">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
-                <input type="text" placeholder="Search volunteers..." className="pl-10 pr-4 py-2 bg-bg-input border border-white/10 rounded-lg text-sm outline-none focus:border-brand-secondary" />
+                <input 
+                  type="text" 
+                  placeholder="Search volunteers..." 
+                  value={volunteerSearch}
+                  onChange={(e) => setVolunteerSearch(e.target.value)}
+                  className="w-full sm:w-auto pl-10 pr-4 py-2 bg-bg-input border border-white/10 rounded-lg text-sm outline-none focus:border-brand-secondary" 
+                />
               </div>
             </div>
             <div className="overflow-x-auto">
@@ -409,15 +508,13 @@ export default function Admin() {
                     <th className="p-4">Name</th>
                     <th className="p-4">Role</th>
                     <th className="p-4">Contact</th>
-                    <th className="p-4">Details</th>
-                    <th className="p-4">Info</th>
                     <th className="p-4">Status</th>
                     <th className="p-4">Joined</th>
                     <th className="p-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="text-text-primary">
-                  {volunteers.map((v) => (
+                  {filteredVolunteers.map((v) => (
                     <tr key={v.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-medium">{v.fullName}</td>
                       <td className="p-4">{v.profession}</td>
@@ -425,17 +522,8 @@ export default function Admin() {
                         <div>{v.email}</div>
                         <div>{v.phone}</div>
                       </td>
-                      <td className="p-4 text-sm text-text-secondary">
-                        {v.licenseNumber && <div>Lic: {v.licenseNumber}</div>}
-                        {v.experience && <div>Exp: {v.experience}</div>}
-                        {v.specialization && <div>Spec: {v.specialization}</div>}
-                      </td>
-                      <td className="p-4 text-sm text-text-secondary">
-                        {v.availability && <div className="truncate max-w-[150px]" title={Array.isArray(v.availability) ? v.availability.join(', ') : v.availability}>{Array.isArray(v.availability) ? v.availability.join(', ') : v.availability}</div>}
-                        {v.motivation && <div className="truncate max-w-[150px] italic" title={v.motivation}>"{v.motivation}"</div>}
-                      </td>
                       <td className="p-4">
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold w-fit ${
                             v.status === 'Approved' ? 'bg-green-500/20 text-green-400' :
                             v.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' :
@@ -443,14 +531,17 @@ export default function Admin() {
                           }`}>
                             {v.status}
                           </span>
-                          {v.status === 'Rejected' && v.rejectionReason && (
-                            <span className="text-xs text-red-400 italic">Reason: {v.rejectionReason}</span>
+                          {v.actionBy && (
+                            <span className="text-[10px] text-text-secondary italic">by {v.actionBy}</span>
                           )}
                         </div>
                       </td>
                       <td className="p-4 text-sm text-text-secondary">{v.joinedDate}</td>
                       <td className="p-4">
                         <div className="flex gap-2">
+                          <button onClick={() => handleViewDetails(v, 'volunteer')} className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors" title="View Details">
+                            <Eye className="w-4 h-4" />
+                          </button>
                           {v.status === 'Pending' && (
                             <>
                               <button onClick={() => handleVolunteerAction(v.id, 'Approve')} className="p-2 hover:bg-green-500/20 text-green-400 rounded-lg transition-colors" title="Approve">
@@ -477,11 +568,17 @@ export default function Admin() {
         {/* Appointments Tab */}
         {activeTab === 'appointments' && (
           <div className="space-y-6">
-             <div className="flex justify-between items-center">
+             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-xl font-bold text-text-primary">Scheduled Appointments</h2>
-              <div className="relative">
+              <div className="relative w-full sm:w-auto">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
-                <input type="text" placeholder="Search appointments..." className="pl-10 pr-4 py-2 bg-bg-input border border-white/10 rounded-lg text-sm outline-none focus:border-brand-secondary" />
+                <input 
+                  type="text" 
+                  placeholder="Search appointments..." 
+                  value={appointmentSearch}
+                  onChange={(e) => setAppointmentSearch(e.target.value)}
+                  className="w-full sm:w-auto pl-10 pr-4 py-2 bg-bg-input border border-white/10 rounded-lg text-sm outline-none focus:border-brand-secondary" 
+                />
               </div>
             </div>
             <div className="overflow-x-auto">
@@ -492,25 +589,19 @@ export default function Admin() {
                     <th className="p-4">Patient</th>
                     <th className="p-4">Service</th>
                     <th className="p-4">Date & Time</th>
-                    <th className="p-4">Details</th>
                     <th className="p-4">Status</th>
                     <th className="p-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="text-text-primary">
-                  {appointments.map((a) => (
+                  {filteredAppointments.map((a) => (
                     <tr key={a.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 font-mono text-sm text-brand-secondary">{a.refId}</td>
                       <td className="p-4 font-medium">{a.patientName}</td>
                       <td className="p-4">{a.type}</td>
                       <td className="p-4 text-sm text-text-secondary">{a.date} at {a.time}</td>
-                      <td className="p-4 text-sm text-text-secondary">
-                        <div>Cat: {a.category}</div>
-                        {a.reason && <div className="truncate max-w-[150px]" title={a.reason}>Rsn: {a.reason}</div>}
-                        {a.notes && <div className="truncate max-w-[150px] italic" title={a.notes}>Note: {a.notes}</div>}
-                      </td>
                       <td className="p-4">
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold w-fit ${
                             a.status === 'Approved' ? 'bg-blue-500/20 text-blue-400' :
                             a.status === 'Completed' ? 'bg-green-500/20 text-green-400' :
@@ -519,13 +610,16 @@ export default function Admin() {
                           }`}>
                             {a.status}
                           </span>
-                          {a.status === 'Rejected' && a.rejectionReason && (
-                            <span className="text-xs text-red-400 italic">Reason: {a.rejectionReason}</span>
+                          {a.actionBy && (
+                            <span className="text-[10px] text-text-secondary italic">by {a.actionBy}</span>
                           )}
                         </div>
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
+                          <button onClick={() => handleViewDetails(a, 'appointment')} className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors" title="View Details">
+                            <Eye className="w-4 h-4" />
+                          </button>
                           {a.status === 'Pending' && (
                             <>
                               <button onClick={() => handleAppointmentAction(a.id, 'Approve')} className="p-2 hover:bg-green-500/20 text-green-400 rounded-lg transition-colors" title="Approve">
@@ -557,32 +651,37 @@ export default function Admin() {
         {/* Incidents Tab */}
         {activeTab === 'incidents' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-text-primary">Incident Logs</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="text-xl font-bold text-text-primary">Incident Logs</h2>
+              <div className="relative w-full sm:w-auto">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
+                <input 
+                  type="text" 
+                  placeholder="Search incidents..." 
+                  value={incidentSearch}
+                  onChange={(e) => setIncidentSearch(e.target.value)}
+                  className="w-full sm:w-auto pl-10 pr-4 py-2 bg-bg-input border border-white/10 rounded-lg text-sm outline-none focus:border-brand-secondary" 
+                />
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-white/10 text-text-secondary text-sm">
                     <th className="p-4">Date</th>
                     <th className="p-4">Type</th>
-                    <th className="p-4">Description</th>
                     <th className="p-4">Reported By</th>
-                    <th className="p-4">Details</th>
                     <th className="p-4">Severity</th>
                     <th className="p-4">Status</th>
                     <th className="p-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="text-text-primary">
-                  {incidents.map((i) => (
+                  {filteredIncidents.map((i) => (
                     <tr key={i.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="p-4 text-sm text-text-secondary">{i.date}</td>
                       <td className="p-4 font-medium">{i.type}</td>
-                      <td className="p-4 text-sm max-w-xs truncate">{i.description}</td>
                       <td className="p-4 text-sm">{i.reportedBy}</td>
-                      <td className="p-4 text-sm text-text-secondary">
-                        {i.fullName && <div>{i.fullName}</div>}
-                        {i.phone && <div>{i.phone}</div>}
-                      </td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                           i.severity === 'Critical' ? 'bg-red-500/20 text-red-400' :
@@ -594,16 +693,24 @@ export default function Admin() {
                         </span>
                       </td>
                       <td className="p-4">
-                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          i.status === 'Open' ? 'bg-blue-500/20 text-blue-400' :
-                          i.status === 'Resolved' ? 'bg-green-500/20 text-green-400' :
-                          'bg-red-500/20 text-red-400'
-                        }`}>
-                          {i.status}
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          <span className={`px-2 py-1 rounded-full text-xs font-bold w-fit ${
+                            i.status === 'Open' ? 'bg-blue-500/20 text-blue-400' :
+                            i.status === 'Resolved' ? 'bg-green-500/20 text-green-400' :
+                            'bg-red-500/20 text-red-400'
+                          }`}>
+                            {i.status}
+                          </span>
+                          {i.actionBy && (
+                            <span className="text-[10px] text-text-secondary italic">by {i.actionBy}</span>
+                          )}
+                        </div>
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
+                          <button onClick={() => handleViewDetails(i, 'incident')} className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors" title="View Details">
+                            <Eye className="w-4 h-4" />
+                          </button>
                           {i.status === 'Open' && (
                             <>
                               <button onClick={() => handleIncidentAction(i.id, 'Resolved')} className="p-2 hover:bg-green-500/20 text-green-400 rounded-lg transition-colors" title="Mark Resolved">

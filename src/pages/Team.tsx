@@ -1,45 +1,52 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { User, Linkedin, Mail } from 'lucide-react';
+import { User } from 'lucide-react';
 
 const teamMembers = [
   {
     name: "Dr. Simon Priestley",
-    role: "Spiritual Director",
+    role: "Spiritual Director, Therapist",
     specialty: "Mental Health & Wellness",
+    bio: "Dr. Simon Priestley is a therapist and mental health coach dedicated to helping individuals achieve emotional well-being, personal clarity, and purposeful living. With a strong background in leadership, family life development, and personal transformation, he supports people in navigating life’s challenges while building healthier relationships and stronger mindsets.",
     image: "/images/team/simon-priestley.jpg"
   },
   {
     name: "Adeyinka Meduoye",
-    role: "Medical Tech Lead",
-    specialty: "Emergency Medicine",
+    role: "Digital Health & Strategy Lead",
+    specialty: "Health Innovation, Technology, and Community Health Systems",
+    bio: "Adeyinka Meduoye is a technology and strategy professional focused on improving healthcare access through digital innovation. He supports the development of digital health systems and community-focused initiatives that promote health awareness, preventive care, and more efficient healthcare delivery.",
     image: "/images/team/adeyinka.png"
   },
   {
-    name: "Nurse Jennifer Enwerem",
+    name: "Jennifer Enwerem",
     role: "Nursing Coordinator",
-    specialty: "Critical Care",
-    image: "/images/team/nurse-jennifer.png"
+    specialty: "Community Health & Patient Care",
+    bio: "Jennifer Enwerem is a dedicated nurse committed to promoting health awareness and supporting community well-being. She contributes to health education and collaborative initiatives that improve patient care and strengthen public health within the community.",
+    image: "/images/team/jennifer.png"
   },
   {
-    name: "Paramedic Faith",
-    role: "Pharmacy Lead",
-    specialty: "Clinical Pharmacy",
-    image: "/images/team/pharm-david-wilson.jpg"
+    name: "Faith Esibe",
+    role: "Medical Business Developer",
+    specialty: "Healthcare Access & Diagnostic Services",
+    bio: "Faith Esibe is a Medical Business Developer at Clinx Healthcare, focused on improving access to quality healthcare through reliable diagnostic services. She connects patients with the right medical support while ensuring they receive the care and satisfaction they deserve.",
+    image: "/images/team/faith.png"
   },
   {
-    name: "Nurse Jane",
-    role: "Wellness Coordinator",
-    specialty: "Public Health",
-    image: "/images/team/nurse-jane.jpg"
+    name: "Arinze Adaobi Maryjane",
+    role: "Healthcare Manager | Nurse",
+    specialty: "Patient Care & Community Health",
+    bio: "Arinze Adaobi Maryjane is a healthcare professional in management and nursing, dedicated to promoting wellness and improving community health. She supports initiatives that enhance healthcare delivery and ensure better health outcomes for all.",
+    image: "/images/team/jane.png"
   },
   {
-    name: "Para. Christian Ekremide",
-    role: "Logistics Officer",
-    specialty: "Medical Logistics",
-    image: "/images/team/christian-ekremide.jpg"
+    name: "Christianah Ekremide",
+    role: "Public Health Engagement Specialist",
+    specialty: "Community Health Outreach & Health Insurance Enrollment",
+    bio: "Christianah Ekremide is a public health engagement professional experienced in community outreach and social health insurance enrollment in Lagos State. She has worked with LASHMA and EKOSHA to improve healthcare access for vulnerable populations through sensitization, advocacy, and enrollment into the ILERA Eko Health Scheme.",
+    image: "/images/team/christiana.jpeg"
   }
 ];
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -118,21 +125,18 @@ export default function Team() {
               />
             </div>
             
-            <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-gradient-to-t from-bg-dark via-bg-dark/90 to-transparent pt-12">
               <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 <span className="inline-block px-3 py-1 mb-2 text-xs font-bold tracking-wider text-brand-secondary uppercase bg-brand-primary/30 rounded-full backdrop-blur-md border border-brand-primary/20">
                   {member.role}
                 </span>
                 <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
-                <p className="text-slate-300 text-sm mb-4">{member.specialty}</p>
+                <p className="text-brand-secondary text-sm font-medium mb-3">{member.specialty}</p>
                 
-                <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                  <button className="p-2 rounded-full bg-white/10 hover:bg-brand-secondary hover:text-bg-dark text-white transition-colors backdrop-blur-sm">
-                    <Linkedin className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 rounded-full bg-white/10 hover:bg-brand-secondary hover:text-bg-dark text-white transition-colors backdrop-blur-sm">
-                    <Mail className="w-4 h-4" />
-                  </button>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 h-0 group-hover:h-auto overflow-hidden">
+                  <p className="text-slate-300 text-sm leading-relaxed border-t border-white/10 pt-3 mt-1">
+                    {member.bio}
+                  </p>
                 </div>
               </div>
             </div>
