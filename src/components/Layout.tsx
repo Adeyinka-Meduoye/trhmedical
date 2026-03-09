@@ -42,17 +42,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
-                      isActive 
-                        ? 'bg-brand-primary/20 text-brand-secondary border border-brand-primary/30' 
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${isActive
+                        ? 'bg-brand-primary/20 text-brand-secondary border border-brand-primary/30'
                         : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
-                    }`}
+                      }`}
                   >
                     {item.name}
                   </Link>
                 );
               })}
-              <Link 
+              <Link
                 to="/contact"
                 className="ml-4 px-4 py-2 bg-brand-secondary text-bg-dark text-sm font-bold rounded-lg hover:bg-brand-secondary/90 transition-colors"
               >
@@ -74,7 +73,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             className="lg:hidden border-t border-white/10 bg-bg-dark"
@@ -115,7 +114,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-6 h-6 bg-brand-primary rounded flex items-center justify-center">
-                <Heart className="w-3 h-3 text-brand-secondary" fill="currentColor" />
+                <img
+                  src="/images/TRH-white-trans.png"
+                  alt="TRH Medical"
+                  className="h-8 w-auto"
+                />
               </div>
               <span className="font-bold text-text-primary">TRH Medical Organisation</span>
             </div>
@@ -140,8 +143,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <li>trhmedical@gmail.com</li>
               <li>+2348185546555</li>
               <li><p className="text-text-secondary">
-                The Banquet Hall, Starjen Hotel,<br/>
-                Doyin/Igbo Elerin Bus-Stop, Okokomaiko,<br/>
+                The Banquet Hall, Starjen Hotel,<br />
+                Doyin/Igbo Elerin Bus-Stop, Okokomaiko,<br />
                 Ojo, Lagos, Nigeria
               </p></li>
             </ul>
