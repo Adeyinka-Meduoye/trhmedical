@@ -69,7 +69,7 @@ export default function Admin() {
   // --- Handlers ---
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const validUsers = ['medus', 'njane', 'echristy', 'njenny', 'efaith'];
+    const validUsers = ['oba-medus', 'njane', 'echristy', 'njenny', 'efaith'];
     
     const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
     
