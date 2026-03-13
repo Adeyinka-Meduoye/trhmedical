@@ -5,7 +5,7 @@ import { User } from 'lucide-react';
 const teamMembers = [
   {
     name: "Dr. Simon Priestley",
-    role: "Spiritual Director, Therapist",
+    role: "Spiritual Director & Therapist",
     specialty: "Mental Health & Wellness",
     bio: "Dr. Simon Priestley is a therapist and mental health coach dedicated to helping individuals achieve emotional well-being, personal clarity, and purposeful living. With a strong background in leadership, family life development, and personal transformation, he supports people in navigating life’s challenges while building healthier relationships and stronger mindsets.",
     image: "/images/team/simon-priestley.jpg"
